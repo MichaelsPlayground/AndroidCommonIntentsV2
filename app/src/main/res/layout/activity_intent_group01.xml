@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".IntentGroup01">
 
     <TextView
         android:layout_width="match_parent"
@@ -13,13 +13,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Main menu"
+        android:text="Menu Group 1"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/btnMain01"
+        android:id="@+id/btnG01B01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -28,7 +28,7 @@
         android:text="Button" />
 
     <Button
-        android:id="@+id/btnMain02"
+        android:id="@+id/btnG01B02"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnMain03"
+        android:id="@+id/btnG01B03"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnMain04"
+        android:id="@+id/btnG01B04"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -52,7 +52,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnMain05"
+        android:id="@+id/btnG01B05"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -60,7 +60,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnMain06"
+        android:id="@+id/btnG01B06"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -68,12 +68,29 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnMain07"
+        android:id="@+id/btnG01B07"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Button" />
+    <Button
+        android:id="@+id/btnG01B08"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/tvG01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="some information will appear later" />
 
 </LinearLayout>

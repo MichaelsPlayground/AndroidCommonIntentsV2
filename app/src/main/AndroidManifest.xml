@@ -10,6 +10,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidCommonIntents">
         <activity
+            android:name=".IntentGroup01"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup02"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup03"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup04"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup05"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup06"
+            android:exported="false" />
+        <activity
+            android:name=".IntentGroup07"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
