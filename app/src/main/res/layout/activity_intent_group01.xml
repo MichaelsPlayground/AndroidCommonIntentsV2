@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="create an alarm" />
 
     <Button
         android:id="@+id/btnG01B02"
@@ -34,7 +34,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="show alarms" />
+
     <Button
         android:id="@+id/btnG01B03"
         android:layout_width="match_parent"
@@ -42,7 +43,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="set a timer" />
+
     <Button
         android:id="@+id/btnG01B04"
         android:layout_width="match_parent"
@@ -50,7 +52,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="show all timers" />
+
     <Button
         android:id="@+id/btnG01B05"
         android:layout_width="match_parent"
@@ -58,7 +61,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="set calendar event" />
     <Button
         android:id="@+id/btnG01B06"
         android:layout_width="match_parent"
