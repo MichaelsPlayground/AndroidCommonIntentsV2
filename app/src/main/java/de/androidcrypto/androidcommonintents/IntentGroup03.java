@@ -1,11 +1,20 @@
 package de.androidcrypto.androidcommonintents;
 
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Locale;
 
 public class IntentGroup03 extends AppCompatActivity {
 
@@ -89,4 +98,5 @@ public class IntentGroup03 extends AppCompatActivity {
 
 
     }
+
 }
