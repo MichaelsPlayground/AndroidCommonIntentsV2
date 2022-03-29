@@ -51,6 +51,7 @@ public class IntentGroup02 extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int  REQUEST_IMAGE_CAPTURE_FULL = 2;
+    static final int  REQUEST_IMAGE_PICK = 5;
     public static final int CAMERA_IMAGE_PERM_CODE = 101;
     public static final int CAMERA_VIDEO_PERM_CODE = 102;
     String currentPhotoPath;
@@ -219,7 +220,11 @@ public class IntentGroup02 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // open the gallery
-
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setType("image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 
@@ -227,6 +232,19 @@ public class IntentGroup02 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // open the gallery and pick a file
+                // create an instance of the
+                // intent of the type image
+                Intent i = new Intent();
+                // this is for images only
+                i.setType("image/*");
+                // this is for videos only
+                //i.setType("video/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+
+                // pass the constant to compare it
+                // with the returned requestCode
+                selectFileFromGalleryActivityResultLauncher.launch(i);
+                // deprecated startActivityForResult(Intent.createChooser(i, "Select Picture"), REQUEST_IMAGE_PICK);
             }
         });
 
@@ -603,4 +621,47 @@ public class IntentGroup02 extends AppCompatActivity {
         return image;
     }
 
+    // select a file from gallery
+    // this function is triggered when user
+    // selects the image from the imageChooser
+    /*
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == REQUEST_IMAGE_PICK) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    ivG02.setImageURI(selectedImageUri);
+                    String info = "file name: " + selectedImageUri.toString();
+                    tvG02.setText(info);
+                }
+            }
+        }
+    }*/
+
+
+    ActivityResultLauncher<Intent> selectFileFromGalleryActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent resultData = result.getData();
+                        Uri selectedImageUri = resultData.getData();
+                        if (null != selectedImageUri) {
+                            // update the preview image in the layout
+                            ivG02.setImageURI(selectedImageUri);
+                            String info = "file name: " + selectedImageUri.toString();
+                            tvG02.setText(info);
+                        }
+                    }
+                }
+            });
 }
