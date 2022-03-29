@@ -32,12 +32,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class IntentGroup02 extends AppCompatActivity {
+public class IntentGroup02V01 extends AppCompatActivity {
 
     Button btn01, btn02, btn03, btn04,
             btn05, btn06, btn07, btn08;
@@ -46,6 +45,12 @@ public class IntentGroup02 extends AppCompatActivity {
 
     ImageView ivG02;
 
+    static final int REQUEST_IMAGE_CAPTURE_THUMBNAIL = 3;
+    static final int  REQUEST_IMAGE_CAPTURE_FULL_RESOLUTION = 4;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int  REQUEST_IMAGE_CAPTURE_FULL = 2;
+    static final int  REQUEST_IMAGE_PICK = 5;
     public static final int CAMERA_IMAGE_PERM_CODE = 101;
     public static final int CAMERA_VIDEO_PERM_CODE = 102;
     String currentPhotoPath;
@@ -115,18 +120,76 @@ public class IntentGroup02 extends AppCompatActivity {
 
                 System.out.println("### 01 take a photo");
                 // https://developer.android.com/training/camera/photobasics
+                // private void dispatchTakePictureIntent() {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
+                    // deprecated startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE_THUMBNAIL);
                     takePictureThumbnailActivityResultLauncher.launch(takePictureIntent);
                 } catch (ActivityNotFoundException e) {
                     // display error state to the user
                 }
+
+                /*
+                Context context = v.getContext();
+                // extended version stores a photo
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                        System.out.println("photo stored in: " + currentPhotoPath);
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                        System.out.println("*** ERROR: " + ex.toString());
+                        return;
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(context,
+                                "de.androidcrypto.androidcommonintents.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+                }
+*/
+
+                /* simple version
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (ActivityNotFoundException e) {
+                    System.out.println("*** ERROR: " + e.toString());
+                    // display error state to the user
+                }
+                */
+                /*
+                Context context = v.getContext();
+
+                String file = "";
+                Uri uri = Uri.fromFile(new File(file));
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                if (intent.resolveActivity(context.getPackageManager()) != null)
+                {
+                    context.startActivity(intent);
+                }*/
             }
         });
 
+
+
         btn02.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
+                // Capture a video and return it
+                // ACTION_IMAGE_CAPTURE_SECURE
+                // https://developer.android.com/reference/android/provider/MediaStore#ACTION_IMAGE_CAPTURE_SECURE
+                // https://developer.android.com/reference/android/os/Environment
                 /*
                 application
                     android:requestLegacyExternalStorage="true"
@@ -139,7 +202,6 @@ public class IntentGroup02 extends AppCompatActivity {
         btn03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // take a photo in full resolution and view in gallery
                 context = v.getContext();
                 verifyPermissions();
             }
@@ -148,10 +210,6 @@ public class IntentGroup02 extends AppCompatActivity {
         btn04.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Capture a video and return it
-                // ACTION_IMAGE_CAPTURE_SECURE
-                // https://developer.android.com/reference/android/provider/MediaStore#ACTION_IMAGE_CAPTURE_SECURE
-                // https://developer.android.com/reference/android/os/Environment
                 context = v.getContext();
                 verifyPermissionsVideo();
             }
@@ -162,7 +220,7 @@ public class IntentGroup02 extends AppCompatActivity {
             public void onClick(View v) {
                 // open the gallery
                 Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setAction(Intent.ACTION_VIEW);
                 intent.setType("image/*");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -181,7 +239,11 @@ public class IntentGroup02 extends AppCompatActivity {
                 // this is for videos only
                 //i.setType("video/*");
                 i.setAction(Intent.ACTION_GET_CONTENT);
+
+                // pass the constant to compare it
+                // with the returned requestCode
                 selectFileFromGalleryActivityResultLauncher.launch(i);
+                // deprecated startActivityForResult(Intent.createChooser(i, "Select Picture"), REQUEST_IMAGE_PICK);
             }
         });
 
@@ -198,9 +260,131 @@ public class IntentGroup02 extends AppCompatActivity {
 
             }
         });
+       
+        
+        
     }
 
-    // section take photo as thumbnail start
+    // take a photo and show in gallery start
+    private void verifyPermissions() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[2]) == PackageManager.PERMISSION_GRANTED) {
+            dispatchTakePictureIntentFullGallery();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    CAMERA_IMAGE_PERM_CODE);
+        }
+    }
+
+    // take a video and show in gallery start
+    private void verifyPermissionsVideo() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[2]) == PackageManager.PERMISSION_GRANTED) {
+            dispatchTakeVideoIntentFullGallery();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    CAMERA_VIDEO_PERM_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_IMAGE_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntentFullGallery();
+            } else {
+                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == CAMERA_VIDEO_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakeVideoIntentFullGallery();
+            } else {
+                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private File createImageFileFullGallery() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        // File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntentFullGallery() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFileFullGallery();
+            } catch (IOException ex) {
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "de.androidcrypto.androidcommonintents.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                // deprecated startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                takePictureActivityResultLauncher.launch(takePictureIntent);
+            }
+        }
+    }
+
+    ActivityResultLauncher<Intent> takePictureActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        //Intent resultData = result.getData();
+                        // and no resultData is given
+                        File f = new File(currentPhotoPath);
+                        ivG02.setImageURI(Uri.fromFile(f));
+                        Log.d("tag", "ABsolute Url of Image is " + Uri.fromFile(f));
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        Uri contentUri = Uri.fromFile(f);
+                        mediaScanIntent.setData(contentUri);
+                        context.sendBroadcast(mediaScanIntent);
+                    }
+                }
+            });
+
+    // take a photo and show in gallery start END
 
     // takes a photo and shows it as thumbnail only
     ActivityResultLauncher<Intent> takePictureThumbnailActivityResultLauncher = registerForActivityResult(
@@ -221,10 +405,6 @@ public class IntentGroup02 extends AppCompatActivity {
                 }
             });
 
-    // section take photo as thumbnail end
-
-    // section take a photo in full resolution and store in external app's directory start
-
     ActivityResultLauncher<Intent> takePictureAppStorageActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -233,9 +413,57 @@ public class IntentGroup02 extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
                         setPic();
+                        /*
+                        Intent resultData = result.getData();
+                        Bundle extras = resultData.getExtras();
+                        Bitmap imageBitmap = (Bitmap) extras.get("data");
+                        ivG02.setImageBitmap(imageBitmap);
+                        String info = "thumbnail height: " + imageBitmap.getHeight()
+                                + " width: " + imageBitmap.getWidth();
+                        tvG02.setText(info);*/
                     }
                 }
             });
+/*
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE_THUMBNAIL && resultCode == RESULT_OK) {
+            // Get the thumbnail
+            // https://developer.android.com/training/camera/photobasics#TaskPhotoView
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ivG02.setImageBitmap(imageBitmap);
+            String info = "thumbnail height: " + imageBitmap.getHeight()
+                    + " width: " + imageBitmap.getWidth();
+            tvG02.setText(info);
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE_FULL_RESOLUTION && resultCode == RESULT_OK) {
+            // Get the thumbnail
+            // https://developer.android.com/training/camera/photobasics#TaskPhotoView
+            //Bundle extras = data.getExtras();
+            //Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //ivG02.setImageBitmap(imageBitmap);
+            //String info = "fullresolution height: " + imageBitmap.getHeight() + " width: " + imageBitmap.getWidth();
+            //tvG02.setText(info);
+            System.out.println("REQUEST_IMAGE_CAPTURE_FULL_RESOLUTION - setPic");
+
+            setPic();
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ivG02.setImageBitmap(imageBitmap);
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE_FULL && resultCode == RESULT_OK) {
+            //Bundle extras = data.getExtras();
+            //Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //imageView.setImageBitmap(imageBitmap);
+            setPic(); // show scaled image
+
+        }
+    }
+*/
 
     private void dispatchTakePictureAppStorageIntent() {
         // https://developer.android.com/reference/android/provider/MediaStore.Images#TaskPath
@@ -263,10 +491,12 @@ public class IntentGroup02 extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 //Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
+                    // deprecated startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE_THUMBNAIL);
                     takePictureAppStorageActivityResultLauncher.launch(takePictureIntent);
                 } catch (ActivityNotFoundException e) {
                     // display error state to the user
                 }
+                //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE_FULL_RESOLUTION);
             }
         }
     }
@@ -291,6 +521,7 @@ public class IntentGroup02 extends AppCompatActivity {
 
     // scale picture to imageView sizes
     private void setPic() {
+        //galleryAddPic(context, currentPhotoPath);
         System.out.println("galleryAddPic currentPhotoPath: " + currentPhotoPath);
         Bitmap bm = BitmapFactory.decodeFile(currentPhotoPath);
         String info = "setPic height: "  + bm.getHeight() + " width: " + bm.getWidth();
@@ -320,133 +551,6 @@ public class IntentGroup02 extends AppCompatActivity {
         ivG02.setImageBitmap(bitmap);
     }
 
-    // section take a photo in full resolution and store in external app's directory end
-
-    // section take a photo in full resolution and store in external app's public directory start
-
-    // take a photo and show in gallery start
-    private void verifyPermissions() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[2]) == PackageManager.PERMISSION_GRANTED) {
-            dispatchTakePictureIntentFullGallery();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    CAMERA_IMAGE_PERM_CODE);
-        }
-    }
-
-    private File createImageFileFullGallery() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        // File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_IMAGE_PERM_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakePictureIntentFullGallery();
-            } else {
-                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (requestCode == CAMERA_VIDEO_PERM_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                dispatchTakeVideoIntentFullGallery();
-            } else {
-                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void dispatchTakePictureIntentFullGallery() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFileFullGallery();
-            } catch (IOException ex) {
-
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "de.androidcrypto.androidcommonintents.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                // deprecated startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
-                takePictureFullGalleryActivityResultLauncher.launch(takePictureIntent);
-            }
-        }
-    }
-
-    ActivityResultLauncher<Intent> takePictureFullGalleryActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        //Intent resultData = result.getData();
-                        // and no resultData is given
-                        File f = new File(currentPhotoPath);
-                        ivG02.setImageURI(Uri.fromFile(f));
-                        Log.d("tag", "ABsolute Url of Image is " + Uri.fromFile(f));
-                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                        Uri contentUri = Uri.fromFile(f);
-                        mediaScanIntent.setData(contentUri);
-                        context.sendBroadcast(mediaScanIntent);
-                    }
-                }
-            });
-
-
-    // section take a photo in full resolution and store in external app's public directory end
-
-    // section take a video in full resolution and store in external app's public directory start
-
-    // take a video and show in gallery start
-    private void verifyPermissionsVideo() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[2]) == PackageManager.PERMISSION_GRANTED) {
-            dispatchTakeVideoIntentFullGallery();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    CAMERA_VIDEO_PERM_CODE);
-        }
-    }
-
     // record a video and show in gallery
     private void dispatchTakeVideoIntentFullGallery() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -468,6 +572,7 @@ public class IntentGroup02 extends AppCompatActivity {
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 // limit the video to 5 seconds
                 takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 3);
+                // deprecated startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
                 takeVideoActivityResultLauncher.launch(takeVideoIntent);
             }
         }
@@ -483,6 +588,9 @@ public class IntentGroup02 extends AppCompatActivity {
                         //Intent resultData = result.getData();
                         // and no resultData is given
                         File f = new File(currentPhotoPath);
+
+                        //ivG02.setImageURI(Uri.fromFile(f));
+
                         Log.d("tag", "ABsolute Url of Image is " + Uri.fromFile(f));
                         System.out.println("*** Absolute Url of Image is " + Uri.fromFile(f));
                         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -506,14 +614,36 @@ public class IntentGroup02 extends AppCompatActivity {
                 ".mp4",         /* suffix */
                 storageDir      /* directory */
         );
+
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    // section take a video in full resolution and store in external app's public directory end
+    // select a file from gallery
+    // this function is triggered when user
+    // selects the image from the imageChooser
+    /*
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    // section select file from gallery start
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == REQUEST_IMAGE_PICK) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    ivG02.setImageURI(selectedImageUri);
+                    String info = "file name: " + selectedImageUri.toString();
+                    tvG02.setText(info);
+                }
+            }
+        }
+    }*/
+
 
     ActivityResultLauncher<Intent> selectFileFromGalleryActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -533,6 +663,4 @@ public class IntentGroup02 extends AppCompatActivity {
                     }
                 }
             });
-
-    // section select file from gallery end
 }
