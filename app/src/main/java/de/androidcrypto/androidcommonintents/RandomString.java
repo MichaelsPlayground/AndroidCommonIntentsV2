@@ -1,6 +1,7 @@
 package de.androidcrypto.androidcommonintents;
 
 import java.security.SecureRandom;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
