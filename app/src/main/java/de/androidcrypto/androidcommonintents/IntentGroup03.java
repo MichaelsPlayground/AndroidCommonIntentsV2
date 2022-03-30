@@ -149,10 +149,10 @@ public class IntentGroup03 extends AppCompatActivity  {
                 // Sets the MIME type to match the Contacts Provider
                 intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
                 RandomString gen = new RandomString(5, ThreadLocalRandom.current());
-                String firstName = "fiNa" + gen;
-                String lastName = "laNa" + gen;
+                String firstName = "fiNa" + gen.nextString();
+                String lastName = "laNa" + gen.nextString();
                 String completeName = firstName + " " + lastName;
-                String emailAddress = gen + "@test.de";
+                String emailAddress = gen.nextString() + "@test.de";
                 String phoneNumber = "1234567890";
 
                 /*
@@ -186,21 +186,30 @@ public class IntentGroup03 extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 // updating an contact
-                startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), PICK_CONTACT_REQUEST);
+
             }
         });
 
         btn06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // insert or edit
+                // https://developer.android.com/training/contacts-provider/modify-data#InsertEdit
+                // Creates a new Intent to insert or edit a contact
+                Intent intentInsertEdit = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+                // Sets the MIME type
+                intentInsertEdit.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+                // Add code here to insert extended data, if desired
+                // ...
+                // Sends the Intent with an request ID
+                startActivity(intentInsertEdit);
             }
         });
 
         btn07.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), PICK_CONTACT_REQUEST);
             }
         });
 
