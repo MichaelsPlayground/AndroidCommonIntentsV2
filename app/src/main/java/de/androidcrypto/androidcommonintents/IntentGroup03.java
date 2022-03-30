@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -56,6 +57,8 @@ public class IntentGroup03 extends AppCompatActivity  {
     static final int REQUEST_PERMISSION_READ_CONTACTS_PHONE_NUMBER = 101;
     static final int REQUEST_PERMISSION_READ_CONTACTS_VIEW = 102;
 
+    static final int REQUEST_PERMISSION_READ_CONTACTS_ALL_PHONE_NUMBERS = 108;
+
     ArrayList<String> arrayList;
     ArrayAdapter arrayAdapter;
 
@@ -65,6 +68,14 @@ public class IntentGroup03 extends AppCompatActivity  {
     private String mEmail;
     private String mRawContactId;
     private String mDataId;
+
+    // list of phone numbers
+    ArrayList<Contact> contactList = new ArrayList<>();
+    private static final String[] PROJECTION = new String[]{
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,14 +227,23 @@ public class IntentGroup03 extends AppCompatActivity  {
         btn08.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                System.out.println("08 getContactArrayList");
+                //checking whether the read contact permission is granted.
+                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    // requesting to the user for permission.
+                    ActivityCompat.requestPermissions(IntentGroup03.this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
+                } else {
+                    //if app already has permission this block will execute.
+                    getContactArrayListView();
+                }
             }
         });
 
         lvG03.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                System.out.println("### setOnItemClicked");
+                System.out.println("position: " + position);
             }
         });
     }
@@ -255,6 +275,13 @@ public class IntentGroup03 extends AppCompatActivity  {
                 Toast.makeText(this, "Read Contacts Permission is required to read contacts.", Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == REQUEST_PERMISSION_READ_CONTACTS_ALL_PHONE_NUMBERS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getContactArrayListView();
+            } else {
+                Toast.makeText(this, "Read Contacts Permission is required to read contacts.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @SuppressLint("Range")
@@ -271,7 +298,7 @@ public class IntentGroup03 extends AppCompatActivity  {
             arrayAdapter.notifyDataSetChanged();
         }
         // the following shows how to get some data
-        getContactList();
+        //getContactList();
     }
 
     @SuppressLint("Range")
@@ -560,4 +587,41 @@ public class IntentGroup03 extends AppCompatActivity  {
             toast.show();
         }
     }
+
+    private void getContactArrayListView() {
+        getContactArrayList();
+        int contactListSize = contactList.size();
+        System.out.println("contactListSize: " + contactListSize);
+    }
+
+    // get a list with name and phonee number
+    private void getContactArrayList() {
+        ContentResolver cr = getContentResolver();
+
+        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PROJECTION, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        if (cursor != null) {
+            HashSet<String> mobileNoSet = new HashSet<String>();
+            try {
+                final int nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                final int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                String name, number;
+                while (cursor.moveToNext()) {
+                    name = cursor.getString(nameIndex);
+                    number = cursor.getString(numberIndex);
+                    number = number.replace(" ", "");
+                    if (!mobileNoSet.contains(number)) {
+                        contactList.add(new Contact(name, number));
+                        mobileNoSet.add(number);
+                        Log.d("hvy", "onCreaterView  Phone Number: name = " + name
+                                + " No = " + number);
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+    }
+
+
 }

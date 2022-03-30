@@ -34,7 +34,7 @@ https://developer.android.com/reference/android/provider/MediaStore#ACTION_IMAGE
 
 https://developer.android.com/reference/android/os/Environment
 
-**Group Contacts**
+**Group Contacts:**
 
 https://developer.android.com/guide/components/intents-common#Contacts
 
@@ -43,5 +43,19 @@ https://developer.android.com/guide/topics/providers/contacts-provider
 https://medium.com/@dev.mahakeemmk/how-to-read-contacts-from-android-258adc707232
 
 https://developer.android.com/guide/topics/providers/contacts-provider
+
+https://www.jackrutorial.com/2018/06/how-to-get-contacts-in-android-display-into-listview.html
+
+
+
+**Group Maps**
+
+https://developer.android.com/guide/components/intents-common#Maps
+
+https://developers.google.com/maps/documentation/urls/android-intents
+
+http://plus.codes/
+
+https://plus.codes/map
 
 

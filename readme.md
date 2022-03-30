@@ -32,7 +32,15 @@ There are some groups available - please keep in mind that this project is ongoi
 
 The below intents are on the "todo" list :-)
 
-**Contacts**
+**Group 3 Contacts:**
+
+- listView of all contacts
+
+- insert a new contact
+
+- update an existing contact
+
+- arraylist of all phone numbers
 
 **Email**
 
