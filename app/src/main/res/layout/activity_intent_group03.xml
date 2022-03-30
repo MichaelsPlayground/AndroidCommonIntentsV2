@@ -52,7 +52,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Button" />
+            android:text="select contact with phone number" />
 
         <Button
             android:id="@+id/btnG03B03"
@@ -61,7 +61,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Button" />
+            android:text="select contact and view" />
 
         <Button
             android:id="@+id/btnG03B04"
@@ -70,7 +70,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Button" />
+            android:text="insert a new contact" />
 
         <Button
             android:id="@+id/btnG03B05"
@@ -79,7 +79,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Button" />
+            android:text="updating an entry" />
 
         <Button
             android:id="@+id/btnG03B06"

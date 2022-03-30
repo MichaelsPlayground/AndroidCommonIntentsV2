@@ -42,4 +42,6 @@ https://developer.android.com/guide/topics/providers/contacts-provider
 
 https://medium.com/@dev.mahakeemmk/how-to-read-contacts-from-android-258adc707232
 
+https://developer.android.com/guide/topics/providers/contacts-provider
+
 
