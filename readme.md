@@ -44,7 +44,15 @@ The below intents are on the "todo" list :-)
 
 **Group 4 File storage:**
 
+- write string to internal storage
 
+- read string from internal storage
+
+- write string to external shared storage
+
+- read string from external shared storage
+
+- read image from external shared storage (after loading click on the image to make it black and white)
 
 **Group 5 Maps:**
 
