@@ -123,7 +123,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="write string to external storage" />
+            android:text="write external shared storage" />
 
         <Button
             android:id="@+id/btnG04B04"
@@ -132,7 +132,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="read string from external storage" />
+            android:text="read external shared storage" />
 
         <Button
             android:id="@+id/btnG04B05"
