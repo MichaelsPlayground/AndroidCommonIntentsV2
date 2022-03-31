@@ -7,15 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,19 +46,25 @@ import java.io.OutputStreamWriter;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+import de.androidcrypto.androidcommonintents.CustomWidgets.DrawImageView;
+import de.androidcrypto.androidcommonintents.CustomWidgets.TouchableImageView;
+
 public class IntentGroup04 extends AppCompatActivity {
 
     Button btn01, btn02, btn03, btn04,
             btn05, btn06, btn07, btn08;
 
     EditText etE01, etE02, etE03;
+    ImageView ivE05;
     TextView tvG04;
 
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 100;
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 101;
+    //private static final int REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE = 102;
+    private static final int REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE = 103;
     Context contextSave; // wird für write & read a file from uri benötigt
 
-
+    static final int REQUEST_IMAGE_OPEN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +83,7 @@ public class IntentGroup04 extends AppCompatActivity {
         etE01 = findViewById(R.id.etG04E01);
         etE02 = findViewById(R.id.etG04E02);
         etE03 = findViewById(R.id.etG04E03);
+        ivE05 = findViewById(R.id.ivG04B05);
         tvG04 = findViewById(R.id.tvG04);
 
         // create some random content
@@ -178,7 +189,12 @@ public class IntentGroup04 extends AppCompatActivity {
         btn05.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // load an image
+                contextSave = v.getContext();
+                tvG04.setText(""); // clear the info
+                // clear edittext
+                etE02.setText("");
+                verifyPermissionsReadImage();
             }
         });
 
@@ -202,37 +218,20 @@ public class IntentGroup04 extends AppCompatActivity {
 
             }
         });
-    }
 
-    // section external storage permission check
-    private void verifyPermissionsWriteString() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
-            writeStringToExternalSharedStorage();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        }
-    }
+        ivE05.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
 
-    private void verifyPermissionsReadString() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
-            readStringFromExternalSharedStorage();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
-        }
+                ColorMatrix matrix = new ColorMatrix();
+                matrix.setSaturation(0);
+
+                ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                ivE05.setColorFilter(filter);
+                tvG04.setText("image converted to black and white");
+                return true;
+            }
+        });
     }
 
     @Override
@@ -249,8 +248,32 @@ public class IntentGroup04 extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readStringFromExternalSharedStorage();
             } else {
-                Toast.makeText(this, "CGrant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
             }
+        }
+        if (requestCode == REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                readImageFromExternalSharedStorage();
+            } else {
+                Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    // section external storage permission check
+    private void verifyPermissionsWriteString() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            writeStringToExternalSharedStorage();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
         }
     }
 
@@ -310,6 +333,23 @@ public class IntentGroup04 extends AppCompatActivity {
             outputStreamWriter.close();
         } catch (IOException e) {
             System.out.println("Exception File write failed: " + e.toString());
+        }
+    }
+
+    // section read string from external shared storage
+
+    private void verifyPermissionsReadString() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            readStringFromExternalSharedStorage();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
         }
     }
 
@@ -412,5 +452,53 @@ public class IntentGroup04 extends AppCompatActivity {
             cursor.close();
         }
     }
+
+    // section read an image
+
+    private void verifyPermissionsReadImage() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            readImageFromExternalSharedStorage();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
+        }
+    }
+
+    private void readImageFromExternalSharedStorage() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
+        //startActivityForResult(intent, REQUEST_IMAGE_OPEN);
+        boolean pickerInitialUri = false;
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        imageFileLoaderActivityResultLauncher.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> imageFileLoaderActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent resultData = result.getData();
+                        // The result data contains the full sized image data
+                        // the user selected.
+                        Uri uri = null;
+                        if (resultData != null) {
+                            uri = resultData.getData();
+                            ivE05.setImageURI(uri);
+                            tvG04.setText("photo loaded");
+                        }
+                    }
+                }
+            });
 
 }
