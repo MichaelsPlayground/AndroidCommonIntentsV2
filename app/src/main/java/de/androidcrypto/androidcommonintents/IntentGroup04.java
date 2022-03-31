@@ -3,14 +3,22 @@ package de.androidcrypto.androidcommonintents;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -42,7 +50,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -60,11 +71,13 @@ public class IntentGroup04 extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 100;
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 101;
-    //private static final int REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE = 102;
+    private static final int REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE = 102;
     private static final int REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE = 103;
     Context contextSave; // wird für write & read a file from uri benötigt
 
     static final int REQUEST_IMAGE_OPEN = 1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,7 +214,29 @@ public class IntentGroup04 extends AppCompatActivity {
         btn06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // we are using scoped storage
+                // in build.gradle:
+                /*
+                buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+                buildFeatures {
+        viewBinding true
+    }
+                 */
+                // save an image
+                contextSave = v.getContext();
+                tvG04.setText(""); // clear the info
+                // clear edittext
+                etE02.setText("");
+                verifyPermissionsWriteImage();
             }
         });
 
@@ -222,12 +257,27 @@ public class IntentGroup04 extends AppCompatActivity {
         ivE05.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                // https://stackoverflow.com/a/39200533/8166854
+                BitmapDrawable draw = (BitmapDrawable) ivE05.getDrawable();
+                Bitmap original = draw.getBitmap();
+                Bitmap bitmap = Bitmap.createBitmap(original.getWidth(),
+                        original.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
 
+                Paint paint = new Paint();
+                ColorMatrix matrix = new ColorMatrix();
+                matrix.setSaturation(0);
+                paint.setColorFilter(new ColorMatrixColorFilter(
+                        matrix));
+                canvas.drawBitmap(original, 0, 0, paint);
+                ivE05.setImageBitmap(bitmap);
+
+                /* old one
                 ColorMatrix matrix = new ColorMatrix();
                 matrix.setSaturation(0);
 
                 ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                ivE05.setColorFilter(filter);
+                ivE05.setColorFilter(filter);*/
                 tvG04.setText("image converted to black and white");
                 return true;
             }
@@ -254,6 +304,13 @@ public class IntentGroup04 extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readImageFromExternalSharedStorage();
+            } else {
+                Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                writeImageToExternalSharedStorage();
             } else {
                 Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
             }
@@ -500,5 +557,146 @@ public class IntentGroup04 extends AppCompatActivity {
                     }
                 }
             });
+
+    // section write an image
+
+    private void verifyPermissionsWriteImage() {
+        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            writeImageToExternalSharedStorage();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissions,
+                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
+        }
+    }
+
+    private void writeImageToExternalSharedStorage() {
+        System.out.println("### writeImageToExternalSharedStorage");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp;
+        BitmapDrawable draw = (BitmapDrawable) ivE05.getDrawable();
+        Bitmap bitmap = draw.getBitmap();
+        System.out.println("### saveImageToExternalSharedStorage started");
+        boolean saved = false;
+        saved = saveImageToExternalStorage(imageFileName, bitmap);
+        System.out.println("saved: " + saved);
+        tvG04.setText("image saved to gallery: " + imageFileName);
+        /*
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
+        //startActivityForResult(intent, REQUEST_IMAGE_OPEN);
+        boolean pickerInitialUri = false;
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        //
+        imageFileWriterActivityResultLauncher.launch(intent);*/
+    }
+
+    ActivityResultLauncher<Intent> imageFileWriterActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent resultData = result.getData();
+                        // the user selected.
+                        Uri uri = null;
+                        File storageFile;
+                        if (resultData != null) {
+                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            String imageFileName = "JPEG_" + timeStamp;
+                            BitmapDrawable draw = (BitmapDrawable) ivE05.getDrawable();
+                            Bitmap bitmap = draw.getBitmap();
+                            saveImageToExternalStorage(imageFileName, bitmap);
+                            /*
+                            uri = resultData.getData();
+                            // get bitmap from imageview
+                            System.out.println("uri");
+
+*/
+
+
+/*
+                            OutputStream outputStream = null;
+                            try {
+                                outputStream = new OutputStream(contextSave.getContentResolver().openOutputStream(uri)) {
+                                    @Override
+                                    public void write(int b) throws IOException {
+
+                                    }
+                                };
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                                outputStream.flush();
+                                outputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            // get file with filename using the timestamp
+                            // Create an image file name
+                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            String imageFileName = "JPEG_" + timeStamp + "_";
+                            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                            storageFile = new File (path, imageFileName);
+                            */
+/*
+                            FileOutputStream outStream = null;
+                            try {
+                                //storageFile = new File(imageFileName);
+                                outStream = new FileOutputStream(contextSave.getContentResolver().openOutputStream(uri));
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                                outStream.flush();
+                                outStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                tvG04.setText("ERROR: " + e.toString());
+                                return;
+                            }
+                            // let the media scanner do his job to append the image to the gallery
+                            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            intent.setData(Uri.fromFile(storageFile));
+                            sendBroadcast(intent);
+                            tvG04.setText("photo saved to " + uri.toString());*/
+                        }
+                    }
+                }
+            });
+
+    private boolean saveImageToExternalStorage(String imgName, Bitmap bmp) {
+        // https://www.youtube.com/watch?v=nA4XWsG9IPM
+        Uri imageCollection = null;
+        ContentResolver resolver = getContentResolver();
+        // > SDK 28
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        } else {
+            imageCollection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, imgName + ".jpg");
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        Uri imageUri = resolver.insert(imageCollection, contentValues);
+        try {
+            OutputStream outputStream = resolver.openOutputStream(Objects.requireNonNull(imageUri));
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            Objects.requireNonNull(outputStream);
+            return true;
+        } catch (Exception e)  {
+            Toast.makeText(this, "Image not saved: \n" + e, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

@@ -5,25 +5,17 @@ The sources are based on this ressource: https://developer.android.com/guide/com
 There are some groups available - please keep in mind that this project is ongoing and a lot of work is not done.
 
 **Group 1: Clock and Calendar**
-
 - create an alarm
-
 - show alarms
-
 - set a timer
-
 - show all timers
-
 - set calendar event
 
 **Group 2: Camera**
-
 - take a photo and consume as thumbnail (resolution 160 * 290 pixel)
-
 - take a photo in full camera resolution, store in external app's directory (not visible in Gallery)
-
 - take a photo in full camera resolution, store in external public app's directory (visible in Gallery)
-  
+
 - take a video with max. 3 seconds duration, store in external public app's directory (visible in Gallery)
 
 - show Gallery
@@ -53,6 +45,7 @@ The below intents are on the "todo" list :-)
 - read string from external shared storage
 
 - read image from external shared storage (after loading click on the image to make it black and white)
+
 
 **Group 5 Maps:**
 
