@@ -159,7 +159,7 @@ public class IntentGroup03 extends AppCompatActivity  {
                 Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
                 // Sets the MIME type to match the Contacts Provider
                 intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-                RandomString gen = new RandomString(5, ThreadLocalRandom.current());
+                RandomString gen = new RandomString(5);
                 String firstName = "fiNa" + gen.nextString();
                 String lastName = "laNa" + gen.nextString();
                 String completeName = firstName + " " + lastName;

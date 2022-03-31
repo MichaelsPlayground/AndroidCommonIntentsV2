@@ -48,6 +48,11 @@ https://www.jackrutorial.com/2018/06/how-to-get-contacts-in-android-display-into
 
 **Group File storage**
 
+https://developer.android.com/guide/topics/data
+
+https://developer.android.com/training/data-storage
+
+https://developer.android.com/training/data-storage/app-specific
 
 
 **Group Maps**
