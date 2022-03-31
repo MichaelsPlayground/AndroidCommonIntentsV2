@@ -16,7 +16,7 @@ public class IntentGroup05 extends AppCompatActivity {
             btn05, btn06, btn07, btn08;
 
     TextView tvG05;
-    EditText etG05;
+    EditText etG05B01, etG05B04;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,8 @@ public class IntentGroup05 extends AppCompatActivity {
         btn08 = findViewById(R.id.btnG05B08);
 
         tvG05 = findViewById(R.id.tvG05);
-        etG05 = findViewById(R.id.etG05B01);
+        etG05B01 = findViewById(R.id.etG05B01);
+        etG05B04 = findViewById(R.id.etG05B04);
 
         btn01.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,16 +45,17 @@ public class IntentGroup05 extends AppCompatActivity {
         <data android:scheme="geo" />
         <category android:name="android.intent.category.DEFAULT" />
     </intent-filter>
+
+    <queries>
+             <package android:name="com.google.android.apps.maps" />
+    </queries>
                  */
                 System.out.println("01 show a map by coordinates");
-                String coordinates = etG05.getText().toString();
+                String coordinates = etG05B01.getText().toString();
                 String geoCoordinates = "geo:" + coordinates;
-                String sampleWirePass = "geo:37.01905285418239,-112.02490176260237";
-                //showMap(sampleWirePass);
                 Uri gmmIntentUri = Uri.parse(geoCoordinates);
-                System.out.println("gmmIntentUri: " + gmmIntentUri.toString());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
+                mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
@@ -67,15 +69,12 @@ public class IntentGroup05 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("02 show a map by coordinates with title");
-                String coordinates = etG05.getText().toString();
-                String title = "wire pass"; // searching for this
+                String coordinates = etG05B01.getText().toString();
+                String searchString = "wire pass"; // searching for this
                 String geoCoordinates = "geo:" + coordinates + "?q=";
-                String sampleWirePass = "geo:37.01905285418239,-112.02490176260237";
-                //showMap(sampleWirePass);
-                Uri gmmIntentUri = Uri.parse(geoCoordinates + Uri.encode(title));
-                System.out.println("gmmIntentUri: " + gmmIntentUri.toString());
+                Uri gmmIntentUri = Uri.parse(geoCoordinates + Uri.encode(searchString));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
+                mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
@@ -89,15 +88,12 @@ public class IntentGroup05 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("03 show a map by coordinates zoom level");
-                String coordinates = etG05.getText().toString();
-                String zoomLevel = "10"; // searching for this
+                String coordinates = etG05B01.getText().toString();
+                String zoomLevel = "10"; // zooming to this
                 String geoCoordinates = "geo:" + coordinates + "?z=";
-                String sampleWirePass = "geo:37.01905285418239,-112.02490176260237";
-                //showMap(sampleWirePass);
                 Uri gmmIntentUri = Uri.parse(geoCoordinates + Uri.encode(zoomLevel));
-                System.out.println("gmmIntentUri: " + gmmIntentUri.toString());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
+                mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
@@ -110,18 +106,12 @@ public class IntentGroup05 extends AppCompatActivity {
         btn04.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // wire pass plus code: 85992X9G+J2
                 System.out.println("04 show a map by plus code");
-                String coordinates = etG05.getText().toString();
-                String zoomLevel = "10"; // searching for this
-                String geoCoordinates = "geo:" + coordinates + "?z=";
-                String sampleWirePass = "geo:37.01905285418239,-112.02490176260237";
-                String sampleWirePassPlus = "http://plus.codes/85992X9G+J2";
-                //showMap(sampleWirePass);
-                Uri gmmIntentUri = Uri.parse(sampleWirePass);
-                System.out.println("gmmIntentUri: " + gmmIntentUri.toString());
+                String plusCode = etG05B04.getText().toString();
+                String geoCoordinates = "http://plus.codes/" + plusCode;
+                Uri gmmIntentUri = Uri.parse(geoCoordinates);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
+                mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
@@ -134,14 +124,23 @@ public class IntentGroup05 extends AppCompatActivity {
         btn05.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // navigation
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=Airport+Las Vegas+Nevada");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
             }
         });
 
         btn06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // street view
+                // Displays an image of the Bell Rock and Courthouse Rock in Sedona, Arizona
+                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=34.795528769957734,-111.76493307319492&cbp=0,30,0,0,-15");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
             }
         });
 

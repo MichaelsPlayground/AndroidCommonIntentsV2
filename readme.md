@@ -42,13 +42,27 @@ The below intents are on the "todo" list :-)
 
 - arraylist of all phone numbers
 
+**Group 4 File storage:**
+
+
+
+**Group 5 Maps:**
+
+- show map by coordinates
+
+- show map coordinates with search
+
+- show coordinates with zoom level
+
+- show map by plus code
+
+- run a navigation
+
+- show street view
+
 **Email**
 
-**File storage**
-
 **Local actions**
-
-**Maps**
 
 **Music or video player**
 
