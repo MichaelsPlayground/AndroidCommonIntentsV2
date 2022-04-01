@@ -673,6 +673,10 @@ public class IntentGroup04 extends AppCompatActivity {
                 }
             });
 
+    // read image from external storage
+    // Java:  https://www.youtube.com/watch?v=4FgzqhhdLAs
+    // https://www.youtube.com/watch?v=E4hc5Kb6KNc
+
     private boolean saveImageToExternalStorage(String imgName, Bitmap bmp) {
         // https://www.youtube.com/watch?v=nA4XWsG9IPM
         Uri imageCollection = null;

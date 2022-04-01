@@ -8,6 +8,8 @@ https://guides.peruzal.com/v1/android-guides/common-intents/
 
 https://guides.codepath.com/android/Common-Implicit-Intents
 
+Youtube about permissions (cameria, external storage etc): https://www.youtube.com/watch?v=nA4XWsG9IPM
+
 **Group Clock:**
 
 https://developer.android.com/reference/android/provider/AlarmClock#ACTION_SET_ALARM
