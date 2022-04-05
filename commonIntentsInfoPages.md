@@ -72,3 +72,10 @@ http://plus.codes/
 https://plus.codes/map
 
 
+**Group Music or video player**
+
+https://developer.android.com/training/basics/intents/sending
+
+https://developer.android.com/guide/topics/media/mediaplayer
+
+royalty free music: https://www.bensound.com

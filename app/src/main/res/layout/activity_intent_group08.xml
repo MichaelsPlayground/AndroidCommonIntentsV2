@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".IntentGroup07">
+    tools:context=".IntentGroup08">
 
     <TextView
         android:layout_width="match_parent"
@@ -19,16 +19,16 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/btnG07B01"
+        android:id="@+id/btnG08B01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="pick and play mp3" />
+        android:text="Button" />
 
     <Button
-        android:id="@+id/btnG07B02"
+        android:id="@+id/btnG08B02"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B03"
+        android:id="@+id/btnG08B03"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B04"
+        android:id="@+id/btnG08B04"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -52,7 +52,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B05"
+        android:id="@+id/btnG08B05"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -60,7 +60,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B06"
+        android:id="@+id/btnG08B06"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -68,7 +68,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B07"
+        android:id="@+id/btnG08B07"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -76,7 +76,7 @@
         android:layout_marginEnd="8dp"
         android:text="Button" />
     <Button
-        android:id="@+id/btnG07B08"
+        android:id="@+id/btnG08B08"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -85,7 +85,7 @@
         android:text="Button" />
 
     <TextView
-        android:id="@+id/tvG07"
+        android:id="@+id/tvG08"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

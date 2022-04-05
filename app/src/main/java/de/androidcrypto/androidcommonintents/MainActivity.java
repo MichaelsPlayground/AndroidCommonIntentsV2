@@ -13,9 +13,9 @@ public class MainActivity extends AppCompatActivity {
     // https://guides.peruzal.com/v1/android-guides/common-intents/
     // https://guides.codepath.com/android/Common-Implicit-Intents
 
-    Button btnMain01, btnMain02, btnMain03, btnMain04, btnMain05, btnMain06, btnMain07;
+    Button btnMain01, btnMain02, btnMain03, btnMain04, btnMain05, btnMain06, btnMain07, btnMain08;
     Intent group01Intent, group02Intent, group03Intent, group04Intent, group05Intent,
-            group06Intent, group07Intent;
+            group06Intent, group07Intent, group08Intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         btnMain05 = findViewById(R.id.btnMain05);
         btnMain06 = findViewById(R.id.btnMain06);
         btnMain07 = findViewById(R.id.btnMain07);
+        btnMain08 = findViewById(R.id.btnMain08);
 
         group01Intent = new Intent(MainActivity.this, IntentGroup01.class);
         group02Intent = new Intent(MainActivity.this, IntentGroup02.class);
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         group05Intent = new Intent(MainActivity.this, IntentGroup05.class);
         group06Intent = new Intent(MainActivity.this, IntentGroup06.class);
         group07Intent = new Intent(MainActivity.this, IntentGroup07.class);
+        group08Intent = new Intent(MainActivity.this, IntentGroup08.class);
 
         btnMain01.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnMain08.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(group08Intent);
+            }
+        });
 
     }
 }
