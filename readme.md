@@ -41,13 +41,20 @@ There are some groups available - please keep in mind that this project is ongoi
 - run a navigation
 - show street view
 
+
+**Group 7 Music or video player:**
+- pick an audio file using intent and play it on the system audio player
+- pick a video file using intent and play it on the system video player
+
+
+
 The below intents are on the "todo" list :-)
 
 **Email**
 
 **Local actions**
 
-**Music or video player**
+
 
 **Notes**
 

@@ -59,8 +59,6 @@ https://developer.android.com/training/data-storage/app-specific
 https://developer.android.com/training/data-storage/shared/documents-files
 
 
-
-
 **Group Maps**
 
 https://developer.android.com/guide/components/intents-common#Maps
@@ -79,3 +77,17 @@ https://developer.android.com/training/basics/intents/sending
 https://developer.android.com/guide/topics/media/mediaplayer
 
 royalty free music: https://www.bensound.com
+
+sample mp4-file: https://www.learningcontainer.com/mp4-sample-video-files-download/
+
+https://filesamples.com/formats/mp4
+
+sample data for URL
+
+https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
+
+https://youtu.be/Iln6xfwYt8A?list=PLPPomK5QKeyWV7PYC9s-PxrDhVIDpt4Oe
+
+https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4
+
+

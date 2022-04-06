@@ -3,6 +3,7 @@ package de.androidcrypto.androidcommonintents;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -64,6 +65,7 @@ public class IntentGroup04 extends AppCompatActivity {
 
     Button btn01, btn02, btn03, btn04,
             btn05, btn06, btn07, btn08;
+    Button btn05Crop;
 
     EditText etE01, etE02, etE03;
     ImageView ivE05;
@@ -74,6 +76,9 @@ public class IntentGroup04 extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE = 102;
     private static final int REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE = 103;
     Context contextSave; // wird für write & read a file from uri benötigt
+
+    Uri mImageCaptureUri; // for cropping intent
+    private static final int CROPPING = 5;
 
     static final int REQUEST_IMAGE_OPEN = 1;
 
@@ -92,6 +97,7 @@ public class IntentGroup04 extends AppCompatActivity {
         btn06 = findViewById(R.id.btnG04B06);
         btn07 = findViewById(R.id.btnG04B07);
         btn08 = findViewById(R.id.btnG04B08);
+        btn05Crop = findViewById(R.id.btnG04B05Crop);
 
         etE01 = findViewById(R.id.etG04E01);
         etE02 = findViewById(R.id.etG04E02);
@@ -208,6 +214,13 @@ public class IntentGroup04 extends AppCompatActivity {
                 // clear edittext
                 etE02.setText("");
                 verifyPermissionsReadImage();
+            }
+        });
+
+        btn05Crop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // crop an image by intent
             }
         });
 
@@ -530,6 +543,11 @@ public class IntentGroup04 extends AppCompatActivity {
     private void readImageFromExternalSharedStorage() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
+        // todo delete routines following
+        // does not work on Samsung A5
+        //intent.putExtra("crop","true");
+        //intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        // delete until here
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
         //startActivityForResult(intent, REQUEST_IMAGE_OPEN);
@@ -702,5 +720,7 @@ public class IntentGroup04 extends AppCompatActivity {
         }
         return false;
     }
+
+
 
 }

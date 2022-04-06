@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="pick and play mp3" />
+        android:text="pick and play Audio" />
 
     <Button
         android:id="@+id/btnG07B02"
@@ -34,7 +34,30 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="pick and play Video" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Enter the URL to play an audio or video file here:"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etG07E01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="URL to play"
+        android:minHeight="48dp"
+        android:text="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" />
+
     <Button
         android:id="@+id/btnG07B03"
         android:layout_width="match_parent"
@@ -42,7 +65,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="enter URL and play Audio" />
+
     <Button
         android:id="@+id/btnG07B04"
         android:layout_width="match_parent"
@@ -50,7 +74,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="enter URL and play Video" />
     <Button
         android:id="@+id/btnG07B05"
         android:layout_width="match_parent"
