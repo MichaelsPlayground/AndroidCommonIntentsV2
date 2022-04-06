@@ -90,4 +90,12 @@ https://youtu.be/Iln6xfwYt8A?list=PLPPomK5QKeyWV7PYC9s-PxrDhVIDpt4Oe
 
 https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4
 
+nicht getestet:
 
+https://swr-swr3-live.cast.addradio.de/swr/swr3/live/mp3/128/stream.mp3
+
+https://www.ardmediathek.de/live/Y3JpZDovL2Rhc2Vyc3RlLmRlL2xpdmUvY2xpcC9hYmNhMDdhMy0zNDc2LTQ4NTEtYjE2Mi1mZGU4ZjY0NmQ0YzQ
+
+https://eventhlshttps-i.akamaihd.net/hls/live/263645/ssn-hd-https/index.m3u8
+
+https://mcdn.daserste.de/daserste/de/master.m3u8
