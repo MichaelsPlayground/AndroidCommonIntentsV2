@@ -41,6 +41,9 @@ There are some groups available - please keep in mind that this project is ongoi
 - run a navigation
 - show street view
 
+**Group 6 Email:**
+
+
 
 **Group 7 Music or video player:**
 - pick an audio file using intent and play it on the system audio player
@@ -51,7 +54,7 @@ There are some groups available - please keep in mind that this project is ongoi
 
 The below intents are on the "todo" list :-)
 
-**Email**
+
 
 **Local actions**
 

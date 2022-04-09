@@ -69,6 +69,17 @@ http://plus.codes/
 
 https://plus.codes/map
 
+**Group Email**
+
+Throw away email address generator
+
+https://temp-mail.org/de/
+
+beyaf66973@xasems.com, dabagop728@xasems.com
+
+pomev39012@whwow.com, ticeyol290@whwow.com
+
+wibehon988@xasems.com, refoke9140@whwow.com
 
 **Group Music or video player**
 

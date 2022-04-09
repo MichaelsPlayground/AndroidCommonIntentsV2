@@ -18,7 +18,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Menu Group 7"
+            android:text="Menu Group 7 Audio and Video"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
