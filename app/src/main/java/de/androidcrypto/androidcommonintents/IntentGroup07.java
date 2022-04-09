@@ -30,7 +30,7 @@ public class IntentGroup07 extends AppCompatActivity {
             btn05, btn06, btn07, btn08;
 
     TextView tvG07;
-    EditText etG07;
+    EditText etG07E03, etG07E04, etG07E05;
 
     final int PICK_AUDIO_REQUEST = 11;
     Context context;
@@ -50,7 +50,9 @@ public class IntentGroup07 extends AppCompatActivity {
         btn08 = findViewById(R.id.btnG07B08);
 
         tvG07 = findViewById(R.id.tvG07);
-        etG07 = findViewById(R.id.etG07E01);
+        etG07E03 = findViewById(R.id.etG07E03);
+        etG07E04 = findViewById(R.id.etG07E04);
+        etG07E05 = findViewById(R.id.etG07E05);
 
         btn01.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +111,7 @@ public class IntentGroup07 extends AppCompatActivity {
  */
                 // sample data: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
                 tvG07.setText("");
-                String url = etG07.getText().toString();
+                String url = etG07E03.getText().toString();
                 if (url.equals("")) {
                     tvG07.setText("ERROR: paste an audio URL to play");
                     return;
@@ -141,7 +143,7 @@ public class IntentGroup07 extends AppCompatActivity {
  */
                 // sample data: https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4
                 tvG07.setText("");
-                String url = etG07.getText().toString();
+                String url = etG07E04.getText().toString();
                 if (url.equals("")) {
                     tvG07.setText("ERROR: paste a video URL to play");
                     return;
@@ -158,16 +160,40 @@ public class IntentGroup07 extends AppCompatActivity {
                 } else {
                     tvG07.setText("ERROR: something got wrong (e.g. false URL ? no internet ?)");
                 }
-
             }
         });
 
         btn05.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+// enter an url and play it
+/*
+<!-- Permissions of internet -->
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ */
+                // sample data: https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_2MB.mp4
+                tvG07.setText("");
+                String url = etG07E05.getText().toString();
+                if (url.equals("")) {
+                    tvG07.setText("ERROR: paste a video stream URL to play");
+                    return;
+                }
+                Uri uri = Uri.parse(url);
+                Intent viewMediaIntent = new Intent();
+                viewMediaIntent.setAction(android.content.Intent.ACTION_VIEW);
+                viewMediaIntent.setDataAndType(uri, "video/*");
+                viewMediaIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                viewMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(viewMediaIntent);
+                if (viewMediaIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(viewMediaIntent);
+                } else {
+                    tvG07.setText("ERROR: something got wrong (e.g. false URL ? no internet ?)");
+                }
             }
         });
+
 
         btn06.setOnClickListener(new View.OnClickListener() {
             @Override
