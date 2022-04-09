@@ -81,6 +81,12 @@ pomev39012@whwow.com, ticeyol290@whwow.com
 
 wibehon988@xasems.com, refoke9140@whwow.com
 
+https://developer.android.com/training/sharing/send
+
+https://stackoverflow.com/a/42856167/8166854
+
+
+
 **Group Music or video player**
 
 https://developer.android.com/training/basics/intents/sending

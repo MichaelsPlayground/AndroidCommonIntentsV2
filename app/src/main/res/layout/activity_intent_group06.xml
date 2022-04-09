@@ -35,7 +35,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etG07E01"
+            android:id="@+id/etG06E01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
             android:layout_marginEnd="8dp"
             android:hint="recipient(s) address"
             android:minHeight="48dp"
-            android:text="wibehon988@xasems.com, refoke9140@whwow.com"
+            android:text="wibehon988@xasems.com,refoke9140@whwow.com"
             android:textSize="16sp" />
 
         <TextView
@@ -58,7 +58,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etG07E02"
+            android:id="@+id/etG06E02"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -66,7 +66,7 @@
             android:layout_marginEnd="8dp"
             android:hint="carbon copy(s) address"
             android:minHeight="48dp"
-            android:text="beyaf66973@xasems.com, dabagop728@xasems.com"
+            android:text="beyaf73@xasems.com, dabagop28@xasems.com"
             android:textSize="16sp" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etG07E03"
+            android:id="@+id/etG06E03"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -89,7 +89,7 @@
             android:layout_marginEnd="8dp"
             android:hint="blind copy(s) address"
             android:minHeight="48dp"
-            android:text="pomev39012@whwow.com, ticeyol290@whwow.com"
+            android:text="pomev3912@whwow.com, ticeyol90@whwow.com"
             android:textSize="16sp" />
 
         <TextView
@@ -104,7 +104,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etG07E04"
+            android:id="@+id/etG06E04"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -127,7 +127,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etG07E05"
+            android:id="@+id/etG06E05"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -145,7 +145,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="send email to messengers" />
 
     <Button
         android:id="@+id/btnG06B02"
@@ -154,7 +154,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="send email to  email clients" />
     <Button
         android:id="@+id/btnG06B03"
         android:layout_width="match_parent"
