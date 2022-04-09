@@ -45,8 +45,9 @@ There are some groups available - please keep in mind that this project is ongoi
 **Group 7 Music or video player:**
 - pick an audio file using intent and play it on the system audio player
 - pick a video file using intent and play it on the system video player
-
-
+- play an audio file from URL on the system audio player
+- play a video file from URL on the system video player
+- play a video stream from URL on the system video player
 
 The below intents are on the "todo" list :-)
 
