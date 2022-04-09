@@ -85,7 +85,11 @@ https://developer.android.com/training/sharing/send
 
 https://stackoverflow.com/a/42856167/8166854
 
+https://stackoverflow.com/questions/7950949/attaching-file-from-internal-storage-to-email
 
+https://stackoverflow.com/questions/60115371/send-file-attachment-stored-in-internal-storage
+
+https://stackoverflow.com/questions/40703407/android-intent-action-send-from-internal-storage-with-content-provider
 
 **Group Music or video player**
 

@@ -42,7 +42,8 @@ There are some groups available - please keep in mind that this project is ongoi
 - show street view
 
 **Group 6 Email:**
-
+- send an email to all messengers
+- send an email only to email clients
 
 
 **Group 7 Music or video player:**

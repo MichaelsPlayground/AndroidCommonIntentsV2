@@ -66,7 +66,7 @@
             android:layout_marginEnd="8dp"
             android:hint="carbon copy(s) address"
             android:minHeight="48dp"
-            android:text="beyaf73@xasems.com, dabagop28@xasems.com"
+            android:text="beyaf66973@xasems.com, dabagop28@xasems.com"
             android:textSize="16sp" />
 
         <TextView
@@ -162,7 +162,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Button" />
+        android:text="send email with one file attachment" />
     <Button
         android:id="@+id/btnG06B04"
         android:layout_width="match_parent"

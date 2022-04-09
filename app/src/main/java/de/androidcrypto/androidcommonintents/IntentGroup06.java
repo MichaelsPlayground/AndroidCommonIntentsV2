@@ -1,5 +1,6 @@
 package de.androidcrypto.androidcommonintents;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -20,7 +23,7 @@ public class IntentGroup06 extends AppCompatActivity {
 
     EditText etG06E01, etG06E02, etG06E03, etG06E04, etG06E05;
     TextView tvG06;
-    String timeStamp;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,7 @@ public class IntentGroup06 extends AppCompatActivity {
         etG06E05 = findViewById(R.id.etG06E05);
         tvG06 = findViewById(R.id.tvG06);
 
-        timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
-        etG06E05.setText("body from " + timeStamp);
+        etG06E05.setText("body from " + Utils.createTimestamp());
 
         btn01.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +95,33 @@ public class IntentGroup06 extends AppCompatActivity {
         btn03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("group 06 send an email with one attachment");
+                context = v.getContext();
+                String[] addresses = etG06E01.getText().toString().split(",");
+                String[] ccAddresses = etG06E02.getText().toString().split(",");
+                String[] bcAddresses = etG06E03.getText().toString().split(",");
+                String subject = etG06E04.getText().toString();
+                String body = etG06E05.getText().toString();
+                // generate file for attachment
+                String filename = "emailattach1.txt";
+                Utils.createFileInInternalStorage(context, filename);
+                // to attach a file from internal storage we need a file provider
+                // file_paths.xml needs an entry for files-path which is for internal storage
+               // get uri for created file
+                File file = new File(getFilesDir(), filename);
+                Uri uri = FileProvider.getUriForFile(IntentGroup06.this, "de.androidcrypto.androidcommonintents.fileprovider", file);
 
+                Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
+                selectorIntent.setData(Uri.parse("mailto:"));
+                final Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+                intent.putExtra(Intent.EXTRA_CC, ccAddresses);
+                intent.putExtra(Intent.EXTRA_BCC, bcAddresses);
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, body);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setSelector(selectorIntent);
+                startActivity(Intent.createChooser(intent, "Send email..."));
             }
         });
 
