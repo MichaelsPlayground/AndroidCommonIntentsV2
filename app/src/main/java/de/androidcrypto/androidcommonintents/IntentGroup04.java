@@ -70,9 +70,9 @@ public class IntentGroup04 extends AppCompatActivity {
             btn05, btn06, btn07, btn08;
     Button btn05Crop;
 
-    EditText etE01, etE02, etE03;
+    EditText etE01, etE02, etE03, etG04;
     ImageView ivE05;
-    TextView tvG04;
+    //TextView tvG04;
 
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 100;
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 101;
@@ -105,7 +105,8 @@ public class IntentGroup04 extends AppCompatActivity {
         etE02 = findViewById(R.id.etG04E02);
         etE03 = findViewById(R.id.etG04E03);
         ivE05 = findViewById(R.id.ivG04B05);
-        tvG04 = findViewById(R.id.tvG04);
+        etG04 = findViewById(R.id.etG04E04);
+        //tvG04 = findViewById(R.id.tvG04);
 
         // create some random content
         RandomString gen = new RandomString(5);
@@ -119,14 +120,14 @@ public class IntentGroup04 extends AppCompatActivity {
                 // store a file in internal storage
                 String dataToWrite = etE01.getText().toString();
                 String filename = etE03.getText().toString();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // sanity check
                 if (dataToWrite.equals("")) {
-                    tvG04.setText("no data to save");
+                    etG04.setText("no data to save");
                     return;
                 }
                 if (filename.equals("")) {
-                    tvG04.setText("no filename to save");
+                    etG04.setText("no filename to save");
                     return;
                 }
                 FileWriter writer = null;
@@ -138,11 +139,11 @@ public class IntentGroup04 extends AppCompatActivity {
                     writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    tvG04.setText("ERROR: " + e.toString());
+                    etG04.setText("ERROR: " + e.toString());
                     return;
                 }
                 String message = "file written to internal storage: " + filename;
-                tvG04.setText(message);
+                etG04.setText(message);
             }
         });
 
@@ -153,18 +154,18 @@ public class IntentGroup04 extends AppCompatActivity {
                 // read a file from internal storage
                 String dataToLoad = "";
                 etE02.setText(dataToLoad); // clear the edittext
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 String filename = etE03.getText().toString();
                 // sanity check
                 if (filename.equals("")) {
-                    tvG04.setText("no filename to load");
+                    etG04.setText("no filename to load");
                     return;
                 }
                 File file = new File(v.getContext().getFilesDir(), filename);
                 // check that file is existing
                 if (!file.exists()) {
                     String errorMessage = "file not existing: " + filename;
-                    tvG04.setText(errorMessage);
+                    etG04.setText(errorMessage);
                     return;
                 }
                 int length = (int) file.length();
@@ -178,11 +179,11 @@ public class IntentGroup04 extends AppCompatActivity {
                     etE02.setText(dataToLoad);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    tvG04.setText("ERROR: " + e.toString());
+                    etG04.setText("ERROR: " + e.toString());
                     return;
                 }
                 String message = "file loaded from internal storage: " + filename;
-                tvG04.setText(message);
+                etG04.setText(message);
 
             }
         });
@@ -193,7 +194,7 @@ public class IntentGroup04 extends AppCompatActivity {
             public void onClick(View v) {
                 // write a file to external shared storage
                 contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 verifyPermissionsWriteString();
             }
         });
@@ -204,7 +205,7 @@ public class IntentGroup04 extends AppCompatActivity {
             public void onClick(View v) {
                 // read a file from external shared storage
                 contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // clear edittext
                 etE02.setText("");
                 verifyPermissionsReadString();
@@ -217,7 +218,7 @@ public class IntentGroup04 extends AppCompatActivity {
             public void onClick(View v) {
                 // load an image
                 contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // clear edittext
                 etE02.setText("");
                 verifyPermissionsReadImage();
@@ -254,7 +255,7 @@ public class IntentGroup04 extends AppCompatActivity {
                  */
                 // save an image
                 contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // clear edittext
                 etE02.setText("");
                 verifyPermissionsWriteImage();
@@ -266,7 +267,7 @@ public class IntentGroup04 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // clear edittext
                 etE02.setText("");
                 verifyPermissionsReadByte();
@@ -278,7 +279,7 @@ public class IntentGroup04 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
+                etG04.setText(""); // clear the info
                 // clear edittext
                 //etE02.setText("");
                 verifyPermissionsWriteByte();
@@ -302,14 +303,7 @@ public class IntentGroup04 extends AppCompatActivity {
                         matrix));
                 canvas.drawBitmap(original, 0, 0, paint);
                 ivE05.setImageBitmap(bitmap);
-
-                /* old one
-                ColorMatrix matrix = new ColorMatrix();
-                matrix.setSaturation(0);
-
-                ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                ivE05.setColorFilter(filter);*/
-                tvG04.setText("image converted to black and white");
+                etG04.setText("image converted to black and white");
                 return true;
             }
         });
@@ -383,7 +377,7 @@ public class IntentGroup04 extends AppCompatActivity {
         String filename = etE03.getText().toString();
         // sanity check
         if (filename.equals("")) {
-            tvG04.setText("no filename to load");
+            etG04.setText("no filename to load");
             return;
         }
         intent.putExtra(Intent.EXTRA_TITLE, filename);
@@ -409,10 +403,10 @@ public class IntentGroup04 extends AppCompatActivity {
                                 String fileContent = etE01.getText().toString();
                                 writeTextToUri(uri, fileContent);
                                 String message = "file written to external shared storage: " + uri.toString();
-                                tvG04.setText(message);
+                                etG04.setText(message);
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                tvG04.setText("ERROR: " + e.toString());
+                                etG04.setText("ERROR: " + e.toString());
                                 return;
                             }
                         }
@@ -476,12 +470,12 @@ public class IntentGroup04 extends AppCompatActivity {
                                 String fileContent = readTextFromUri(uri);
                                 etE02.setText(fileContent);
                                 String message = "file loaded from external storage" + uri.toString();
-                                tvG04.setText(message);
+                                etG04.setText(message);
                                 // get metadata from uri
                                 dumpImageMetaData(uri);
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                tvG04.setText("ERROR: " + e.toString());
+                                etG04.setText("ERROR: " + e.toString());
                                 return;
                             }
                         }
@@ -492,7 +486,7 @@ public class IntentGroup04 extends AppCompatActivity {
     private String readTextFromUri(Uri uri) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         //try (InputStream inputStream = getContentResolver().openInputStream(uri);
-        // achtung: contextSave muss gefüllt sein !
+        // warning: contextSave needs to get filled
         try (InputStream inputStream = contextSave.getContentResolver().openInputStream(uri);
              BufferedReader reader = new BufferedReader(
                      new InputStreamReader(Objects.requireNonNull(inputStream)))) {
@@ -509,7 +503,7 @@ public class IntentGroup04 extends AppCompatActivity {
         // The query, because it only applies to a single document, returns only
         // one row. There's no need to filter, sort, or select fields,
         // because we want all fields for one document.
-        String message = tvG04.getText().toString();
+        String message = etG04.getText().toString();
         Cursor cursor = contextSave.getContentResolver()
                 .query(uri, null, null, null, null, null);
 
@@ -540,7 +534,7 @@ public class IntentGroup04 extends AppCompatActivity {
                 }
                 Log.i(TAG, "Size: " + size + " bytes");
                 message = message + "\nSize: " + size + " bytes";
-                tvG04.setText(message);
+                etG04.setText(message);
             }
         } finally {
             cursor.close();
@@ -594,7 +588,7 @@ public class IntentGroup04 extends AppCompatActivity {
                         if (resultData != null) {
                             uri = resultData.getData();
                             ivE05.setImageURI(uri);
-                            tvG04.setText("photo loaded");
+                            etG04.setText("photo loaded");
                         }
                     }
                 }
@@ -627,7 +621,7 @@ public class IntentGroup04 extends AppCompatActivity {
         boolean saved = false;
         saved = saveImageToExternalStorage(imageFileName, bitmap);
         System.out.println("saved: " + saved);
-        tvG04.setText("image saved to gallery: " + imageFileName);
+        etG04.setText("image saved to gallery: " + imageFileName);
     }
 
     ActivityResultLauncher<Intent> imageFileWriterActivityResultLauncher = registerForActivityResult(
@@ -647,56 +641,6 @@ public class IntentGroup04 extends AppCompatActivity {
                             BitmapDrawable draw = (BitmapDrawable) ivE05.getDrawable();
                             Bitmap bitmap = draw.getBitmap();
                             saveImageToExternalStorage(imageFileName, bitmap);
-                            /*
-                            uri = resultData.getData();
-                            // get bitmap from imageview
-                            System.out.println("uri");
-
-*/
-
-
-/*
-                            OutputStream outputStream = null;
-                            try {
-                                outputStream = new OutputStream(contextSave.getContentResolver().openOutputStream(uri)) {
-                                    @Override
-                                    public void write(int b) throws IOException {
-
-                                    }
-                                };
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                                outputStream.flush();
-                                outputStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-
-                            // get file with filename using the timestamp
-                            // Create an image file name
-                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                            String imageFileName = "JPEG_" + timeStamp + "_";
-                            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                            storageFile = new File (path, imageFileName);
-                            */
-/*
-                            FileOutputStream outStream = null;
-                            try {
-                                //storageFile = new File(imageFileName);
-                                outStream = new FileOutputStream(contextSave.getContentResolver().openOutputStream(uri));
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-                                outStream.flush();
-                                outStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                tvG04.setText("ERROR: " + e.toString());
-                                return;
-                            }
-                            // let the media scanner do his job to append the image to the gallery
-                            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            intent.setData(Uri.fromFile(storageFile));
-                            sendBroadcast(intent);
-                            tvG04.setText("photo saved to " + uri.toString());*/
                         }
                     }
                 }
@@ -826,7 +770,7 @@ public class IntentGroup04 extends AppCompatActivity {
         String filename = etE03.getText().toString();
         // sanity check
         if (filename.equals("")) {
-            tvG04.setText("no filename to save");
+            etG04.setText("no filename to save");
             return;
         }
         intent.putExtra(Intent.EXTRA_TITLE, filename);
@@ -855,15 +799,15 @@ public class IntentGroup04 extends AppCompatActivity {
                                 boolean writeSuccess = writeByteToUri(uri, fileContent);
                                 if (writeSuccess) {
                                     String message = "file written to external shared storage: " + uri.toString();
-                                    tvG04.setText(message);
+                                    etG04.setText(message);
                                 } else {
                                     String message = "error on file writing to external shared storage: " + uri.toString();
-                                    tvG04.setText(message);
+                                    etG04.setText(message);
                                 }
 
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                tvG04.setText("ERROR: " + e.toString());
+                                etG04.setText("ERROR: " + e.toString());
                                 return;
                             }
                         }
