@@ -277,6 +277,7 @@ public class IntentGroup04 extends AppCompatActivity {
         btn08.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                contextSave = v.getContext();
                 tvG04.setText(""); // clear the info
                 // clear edittext
                 //etE02.setText("");
@@ -851,9 +852,15 @@ public class IntentGroup04 extends AppCompatActivity {
 
                                 byte[] fileContent = (etE01.getText().toString()).getBytes(StandardCharsets.UTF_8);
                                 //String fileContent = etE01.getText().toString();
-                                writeByteToUri(uri, fileContent);
-                                String message = "file written to external shared storage: " + uri.toString();
-                                tvG04.setText(message);
+                                boolean writeSuccess = writeByteToUri(uri, fileContent);
+                                if (writeSuccess) {
+                                    String message = "file written to external shared storage: " + uri.toString();
+                                    tvG04.setText(message);
+                                } else {
+                                    String message = "error on file writing to external shared storage: " + uri.toString();
+                                    tvG04.setText(message);
+                                }
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 tvG04.setText("ERROR: " + e.toString());
@@ -863,17 +870,16 @@ public class IntentGroup04 extends AppCompatActivity {
                     }
                 }
             });
-    private void writeByteToUri(Uri uri, byte[] data) throws IOException {
+    private boolean writeByteToUri(Uri uri, byte[] data) throws IOException {
         // this method needs Apache Commons IO dependency
-
-        IOUtils.
-
-        //byte[] data;
-        // https://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-array-in-java
-        try (InputStream inputStream = contextSave.getContentResolver().openInputStream(uri);) {
-            data = IOUtils.toByteArray(inputStream);
+        try (OutputStream outputStream = contextSave.getContentResolver().openOutputStream(uri);) {
+            IOUtils.writeChunked(data, outputStream);
+            IOUtils.closeQuietly(outputStream);
+            return true;
+        } catch (Exception e) {
+            System.out.println("*** EXCEPTION: " + e);
+            return false;
         }
-        return data;
     }
 
 
