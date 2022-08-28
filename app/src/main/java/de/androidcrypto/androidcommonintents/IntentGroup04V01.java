@@ -3,7 +3,6 @@ package de.androidcrypto.androidcommonintents;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,7 +18,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -40,31 +38,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
-import de.androidcrypto.androidcommonintents.CustomWidgets.DrawImageView;
-import de.androidcrypto.androidcommonintents.CustomWidgets.TouchableImageView;
-
-public class IntentGroup04 extends AppCompatActivity {
+public class IntentGroup04V01 extends AppCompatActivity {
 
     Button btn01, btn02, btn03, btn04,
             btn05, btn06, btn07, btn08;
@@ -77,14 +65,15 @@ public class IntentGroup04 extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 100;
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 101;
     private static final int REQUEST_PERMISSION_WRITE_IMAGE_EXTERNAL_STORAGE = 102;
-    private static final int REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE = 104;
-    private static final int REQUEST_PERMISSION_WRITE_BYTE_EXTERNAL_STORAGE = 104;
-    private static final int REQUEST_PERMISSION_READ_BYTE_EXTERNAL_STORAGE = 105;
-
+    private static final int REQUEST_PERMISSION_READ_IMAGE_EXTERNAL_STORAGE = 103;
     Context contextSave; // wird für write & read a file from uri benötigt
 
     Uri mImageCaptureUri; // for cropping intent
     private static final int CROPPING = 5;
+
+    static final int REQUEST_IMAGE_OPEN = 1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +101,6 @@ public class IntentGroup04 extends AppCompatActivity {
         String randomString = "A " + gen.nextString() + " B " + gen.nextString();
         etE01.setText(randomString);
 
-        // write string to internal storage
         btn01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +134,6 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // read string from internal storage
         btn02.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,7 +174,6 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // write string to external storage
         btn03.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,7 +184,6 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // read string from external storage
         btn04.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,7 +196,6 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // read image from external storage
         btn05.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,7 +215,6 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // write image to external storage
         btn06.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,26 +244,17 @@ public class IntentGroup04 extends AppCompatActivity {
             }
         });
 
-        // read byte array from external storage
         btn07.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //contextSave = v.getContext();
-                tvG04.setText(""); // clear the info
-                // clear edittext
-                etE02.setText("");
-                verifyPermissionsReadByte();
+
             }
         });
 
-        // write byte array to external storage
         btn08.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvG04.setText(""); // clear the info
-                // clear edittext
-                //etE02.setText("");
-                verifyPermissionsWriteByte();
+
             }
         });
 
@@ -345,14 +319,8 @@ public class IntentGroup04 extends AppCompatActivity {
                 Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == REQUEST_PERMISSION_READ_BYTE_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readByteFromExternalSharedStorage();
-            } else {
-                Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
+
 
     // section external storage permission check
     private void verifyPermissionsWriteString() {
@@ -491,7 +459,7 @@ public class IntentGroup04 extends AppCompatActivity {
     private String readTextFromUri(Uri uri) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         //try (InputStream inputStream = getContentResolver().openInputStream(uri);
-        // achtung: contextSave muss gefüllt sein !
+        // achtung: context1 muss gefüllt sein !
         try (InputStream inputStream = contextSave.getContentResolver().openInputStream(uri);
              BufferedReader reader = new BufferedReader(
                      new InputStreamReader(Objects.requireNonNull(inputStream)))) {
@@ -627,6 +595,19 @@ public class IntentGroup04 extends AppCompatActivity {
         saved = saveImageToExternalStorage(imageFileName, bitmap);
         System.out.println("saved: " + saved);
         tvG04.setText("image saved to gallery: " + imageFileName);
+        /*
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
+        //startActivityForResult(intent, REQUEST_IMAGE_OPEN);
+        boolean pickerInitialUri = false;
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        //
+        imageFileWriterActivityResultLauncher.launch(intent);*/
     }
 
     ActivityResultLauncher<Intent> imageFileWriterActivityResultLauncher = registerForActivityResult(
@@ -731,150 +712,6 @@ public class IntentGroup04 extends AppCompatActivity {
         return false;
     }
 
-    // section read byte array from external storage
-
-    private void verifyPermissionsReadByte() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
-            readByteFromExternalSharedStorage();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
-        }
-    }
-
-    private void readByteFromExternalSharedStorage() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        // Only the system receives the ACTION_OPEN_DOCUMENT, so no need to test.
-        //startActivityForResult(intent, REQUEST_IMAGE_OPEN);
-        boolean pickerInitialUri = false;
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-        byteFileLoaderActivityResultLauncher.launch(intent);
-    }
-
-    ActivityResultLauncher<Intent> byteFileLoaderActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        Intent resultData = result.getData();
-                        // The result data contains the full sized image data
-                        // the user selected.
-                        Uri uri = null;
-                        byte[] dataBytes = new byte[0];
-                        if (resultData != null) {
-                            uri = resultData.getData();
-                            try {
-                                dataBytes = readByteFromUri(uri);
-                                //ivE05.setImageURI(uri);
-                                etE02.setText(Utils.bytesToHex(dataBytes));
-                            } catch (IOException e) {
-                                etE02.setText("error on reading the file: " + e);
-                            }
-                        }
-                    }
-                }
-            });
-
-    private byte[] readByteFromUri(Uri uri) throws IOException {
-        // this method needs Apache Commons IO dependency
-        byte[] data;
-        // https://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-array-in-java
-        try (InputStream inputStream = contextSave.getContentResolver().openInputStream(uri);) {
-            data = IOUtils.toByteArray(inputStream);
-            IOUtils.closeQuietly(inputStream);
-        }
-        return data;
-    }
-
-    // section write byte array from external storage
-
-    private void verifyPermissionsWriteByte() {
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
-            writeByteToExternalSharedStorage();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    private void writeByteToExternalSharedStorage() {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        // Optionally, specify a URI for the file that should appear in the
-        // system file picker when it loads.
-        //boolean pickerInitialUri = false;
-        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-        // get filename from edittext
-        String filename = etE03.getText().toString();
-        // sanity check
-        if (filename.equals("")) {
-            tvG04.setText("no filename to save");
-            return;
-        }
-        intent.putExtra(Intent.EXTRA_TITLE, filename);
-        byteFileWriterActivityResultLauncher.launch(intent);
-    }
-
-    ActivityResultLauncher<Intent> byteFileWriterActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // There are no request codes
-                        Intent resultData = result.getData();
-                        // The result data contains a URI for the document or directory that
-                        // the user selected.
-                        Uri uri = null;
-                        if (resultData != null) {
-                            uri = resultData.getData();
-                            // Perform operations on the document using its URI.
-                            try {
-                                // get file content from edittext
-
-                                byte[] fileContent = (etE01.getText().toString()).getBytes(StandardCharsets.UTF_8);
-                                //String fileContent = etE01.getText().toString();
-                                writeByteToUri(uri, fileContent);
-                                String message = "file written to external shared storage: " + uri.toString();
-                                tvG04.setText(message);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                tvG04.setText("ERROR: " + e.toString());
-                                return;
-                            }
-                        }
-                    }
-                }
-            });
-    private void writeByteToUri(Uri uri, byte[] data) throws IOException {
-        // this method needs Apache Commons IO dependency
-
-        IOUtils.
-
-        //byte[] data;
-        // https://stackoverflow.com/questions/1264709/convert-inputstream-to-byte-array-in-java
-        try (InputStream inputStream = contextSave.getContentResolver().openInputStream(uri);) {
-            data = IOUtils.toByteArray(inputStream);
-        }
-        return data;
-    }
 
 
 }
