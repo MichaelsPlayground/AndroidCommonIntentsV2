@@ -72,7 +72,6 @@ public class IntentGroup04 extends AppCompatActivity {
 
     EditText etE01, etE02, etE03, etG04;
     ImageView ivE05;
-    //TextView tvG04;
 
     private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 100;
     private static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 101;
@@ -106,7 +105,6 @@ public class IntentGroup04 extends AppCompatActivity {
         etE03 = findViewById(R.id.etG04E03);
         ivE05 = findViewById(R.id.ivG04B05);
         etG04 = findViewById(R.id.etG04E04);
-        //tvG04 = findViewById(R.id.tvG04);
 
         // create some random content
         RandomString gen = new RandomString(5);
@@ -343,6 +341,13 @@ public class IntentGroup04 extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSION_READ_BYTE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readByteFromExternalSharedStorage();
+            } else {
+                Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == REQUEST_PERMISSION_WRITE_BYTE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                writeByteToExternalSharedStorage();
             } else {
                 Toast.makeText(this, "Grant Storage Permission is Required to use this function.", Toast.LENGTH_SHORT).show();
             }
