@@ -85,6 +85,7 @@ public class IntentGroup04 extends AppCompatActivity {
     Uri mImageCaptureUri; // for cropping intent
     private static final int CROPPING = 5;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -354,7 +355,10 @@ public class IntentGroup04 extends AppCompatActivity {
         }
     }
 
-    // section external storage permission check
+    /**
+     * section external storage permission check
+     */
+
     private void verifyPermissionsWriteString() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -429,7 +433,9 @@ public class IntentGroup04 extends AppCompatActivity {
         }
     }
 
-    // section read string from external shared storage
+    /**
+     * section read string from external shared storage
+     */
 
     private void verifyPermissionsReadString() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -546,7 +552,9 @@ public class IntentGroup04 extends AppCompatActivity {
         }
     }
 
-    // section read an image
+    /**
+     * section write an image to external storage
+     */
 
     private void verifyPermissionsReadImage() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -599,7 +607,9 @@ public class IntentGroup04 extends AppCompatActivity {
                 }
             });
 
-    // section write an image
+    /**
+     * section write an image to external storage
+     */
 
     private void verifyPermissionsWriteImage() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -681,7 +691,9 @@ public class IntentGroup04 extends AppCompatActivity {
         return false;
     }
 
-    // section read byte array from external storage
+    /**
+     * section read byte array from external storage
+     */
 
     private void verifyPermissionsReadByte() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -746,7 +758,9 @@ public class IntentGroup04 extends AppCompatActivity {
         return data;
     }
 
-    // section write byte array from external storage
+    /**
+     * section write byte array from external storage
+     */
 
     private void verifyPermissionsWriteByte() {
         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -830,6 +844,98 @@ public class IntentGroup04 extends AppCompatActivity {
             return false;
         }
     }
+
+    /*
+    codes for file encryption and decryption using Bouncy Castle and CipherInput/OutputStream
+
+    implementation 'org.bouncycastle:bcprov-jdk15to18:1.72'
+
+    char[] passphrase = "passphrase".toCharArray();
+    int iterations = 5000; // iterations for pbkdf2
+
+    // this way for adding bouncycastle to android
+    // so wird BouncyCastle in Android eingebunden
+    Security.removeProvider("BC"); // remove provider
+    Security.addProvider(new BouncyCastleProvider()); // add new provider
+
+    public static boolean encryptGcmFileBufferedCipherOutputStream(String inputFilename, String outputFilename, char[] password, int iterations)  {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[32];
+        secureRandom.nextBytes(salt);
+        byte[] nonce = new byte[12];
+        secureRandom.nextBytes(nonce);
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES/GCM/NOPadding", "BC");
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+        try (FileInputStream in = new FileInputStream(inputFilename);
+             FileOutputStream out = new FileOutputStream(outputFilename);
+             CipherOutputStream encryptedOutputStream = new CipherOutputStream(out, cipher);) {
+            out.write(nonce);
+            out.write(salt);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256", "BC");
+            KeySpec keySpec = new PBEKeySpec(password, salt, iterations, 32 * 8); // 128 - 192 - 256
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(16 * 8, nonce);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, gcmParameterSpec);
+            byte[] buffer = new byte[8096];
+            int nread;
+            while ((nread = in.read(buffer)) > 0) {
+                encryptedOutputStream.write(buffer, 0, nread);
+            }
+            encryptedOutputStream.flush();
+        } catch (IOException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException | InvalidAlgorithmParameterException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        if (new File(outputFilename).exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean decryptGcmFileBufferedCipherInputStream(String inputFilename, String outputFilename, char[] password, int iterations) {
+        byte[] salt = new byte[32];
+        byte[] nonce = new byte[12];
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES/GCM/NOPadding", "BC");
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+
+        try (FileInputStream in = new FileInputStream(inputFilename); // i don't care about the path as all is lokal
+             CipherInputStream cipherInputStream = new CipherInputStream(in, cipher);
+             FileOutputStream out = new FileOutputStream(outputFilename)) // i don't care about the path as all is lokal
+        {
+            byte[] buffer = new byte[8192];
+            in.read(nonce);
+            in.read(salt);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256", "BC");
+            KeySpec keySpec = new PBEKeySpec(password, salt, iterations, 32 * 8); // 128 - 192 - 256
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(16 * 8, nonce);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, gcmParameterSpec);
+            int nread;
+            while ((nread = cipherInputStream.read(buffer)) > 0) {
+                out.write(buffer, 0, nread);
+            }
+            out.flush();
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+        if (new File(outputFilename).exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+     */
 
 
 }
