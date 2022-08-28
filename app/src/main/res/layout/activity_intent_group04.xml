@@ -120,23 +120,13 @@
                 android:id="@+id/etG04E04"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
+                android:maxLines="4"
                 android:text=""
                 android:visibility="visible"
                 android:ellipsize="end"
                 android:focusable="false"
                 tools:ignore="KeyboardInaccessibleWidget" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tvG04"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="some information will appear later"
-            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnG04B01"
