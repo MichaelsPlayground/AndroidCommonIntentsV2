@@ -3,6 +3,7 @@ package de.androidcrypto.androidcommonintents;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +35,7 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,6 +44,7 @@ public class IntentGroup02 extends AppCompatActivity {
     Button btn01, btn02, btn03, btn04,
             btn05, btn06, btn07, btn08;
 
+    Button btn01S;
     TextView tvG02;
 
     ImageView ivG02;
@@ -58,6 +61,7 @@ public class IntentGroup02 extends AppCompatActivity {
         setContentView(R.layout.activity_intent_group02);
         
         btn01 = findViewById(R.id.btnG02B01);
+        btn01S = findViewById(R.id.btnG02B01S);
         btn02 = findViewById(R.id.btnG02B02);
         btn03 = findViewById(R.id.btnG02B03);
         btn04 = findViewById(R.id.btnG02B04);
@@ -118,6 +122,24 @@ public class IntentGroup02 extends AppCompatActivity {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
                     takePictureThumbnailActivityResultLauncher.launch(takePictureIntent);
+                } catch (ActivityNotFoundException e) {
+                    // display error state to the user
+                }
+            }
+        });
+
+        btn01S.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Capture a picture as thumbnail, return and show it AND store in Downloads folder
+
+                // NOTE: you manually need to set permissions for Camera and Storage in Apps..
+
+                System.out.println("### 01S take a photo as thumbnail and store it");
+                // https://developer.android.com/training/camera/photobasics
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    takePictureThumbnailStorageActivityResultLauncher.launch(takePictureIntent);
                 } catch (ActivityNotFoundException e) {
                     // display error state to the user
                 }
@@ -217,6 +239,46 @@ public class IntentGroup02 extends AppCompatActivity {
                         String info = "thumbnail height: " + imageBitmap.getHeight()
                                 + " width: " + imageBitmap.getWidth();
                         tvG02.setText(info);
+                    }
+                }
+            });
+
+    // takes a picture from camera and stores the thumbnail to the external folder
+    ActivityResultLauncher<Intent> takePictureThumbnailStorageActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent resultData = result.getData();
+                        Bundle extras = resultData.getExtras();
+                        Bitmap imageBitmap = (Bitmap) extras.get("data");
+                        ivG02.setImageBitmap(imageBitmap);
+                        String info = "thumbnail height: " + imageBitmap.getHeight()
+                                + " width: " + imageBitmap.getWidth();
+                        tvG02.setText(info);
+
+                        // storage part
+                        // see https://stackoverflow.com/a/63205487/8166854
+                        //Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                        ContentValues values = new ContentValues();
+                        values.put(MediaStore.Images.Media.TITLE, "any_picture_name");
+                        values.put(MediaStore.Images.Media.BUCKET_ID, "test");
+                        values.put(MediaStore.Images.Media.DESCRIPTION, "test Image taken");
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                        OutputStream outstream;
+                        try {
+                            outstream = getContentResolver().openOutputStream(uri);
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
+                            outstream.close();
+                            Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 }
             });
